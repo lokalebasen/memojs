@@ -1,0 +1,15 @@
+{
+  "name": "memojs",
+  "version": "1.1.0",
+  "homepage": "https://github.com/lokalebasen/memojs",
+  "description": "A wrapper for localStorage",
+  "main": "memojs.coffee",
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "README.md",
+    "dummy.html",
+    "test",
+    "tests"
+  ]
+}
