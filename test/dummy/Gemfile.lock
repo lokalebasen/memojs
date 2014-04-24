@@ -1,7 +1,7 @@
 PATH
   remote: ./../..
   specs:
-    memojs (1.0.0)
+    memojs (1.0.1)
       coffee-rails
       railties (>= 3.1, < 5.0)
 
