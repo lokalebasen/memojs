@@ -10,10 +10,7 @@ class Memo
 
   get: (key) ->
     if value = localStorage[key]
-      try
-        JSON.parse(value)
-      catch error # It's not valid JSON, so probably set by something using localStorage directly.
-        value
+      @_parseJSONSilently(value)
     else
       null
 
@@ -42,11 +39,18 @@ class Memo
     listeners = @_storageKeyEventListeners[storageEvent.key] || []
     eventObject =
       key: storageEvent.key
-      oldValue: JSON.parse(storageEvent.oldValue)
-      newValue: JSON.parse(storageEvent.newValue)
+      oldValue: @_parseJSONSilently(storageEvent.oldValue)
+      newValue: @_parseJSONSilently(storageEvent.newValue)
       url: storageEvent.url
     for listener in listeners
       listener(eventObject)
+
+  _parseJSONSilently: (jsonString) ->
+    try
+      JSON.parse(jsonString)
+    catch error
+      jsonString
+
 
 memo = new Memo
 
