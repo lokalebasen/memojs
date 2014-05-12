@@ -19,14 +19,9 @@
     };
 
     Memo.prototype.get = function(key) {
-      var error, value;
+      var value;
       if (value = localStorage[key]) {
-        try {
-          return JSON.parse(value);
-        } catch (_error) {
-          error = _error;
-          return value;
-        }
+        return this._parseJSONSilently(value);
       } else {
         return null;
       }
@@ -66,11 +61,14 @@
 
     Memo.prototype._fireChange = function(storageEvent) {
       var eventObject, listener, listeners, _i, _len, _results;
-      listeners = this._storageKeyEventListeners[storageEvent.key] || [];
+      if (!(this._listenersForEvent(storageEvent) && this._storageValueChanged(storageEvent))) {
+        return;
+      }
+      listeners = this._listenersForEvent(storageEvent) || [];
       eventObject = {
         key: storageEvent.key,
-        oldValue: JSON.parse(storageEvent.oldValue),
-        newValue: JSON.parse(storageEvent.newValue),
+        oldValue: this._parseJSONSilently(storageEvent.oldValue),
+        newValue: this._parseJSONSilently(storageEvent.newValue),
         url: storageEvent.url
       };
       _results = [];
@@ -79,6 +77,24 @@
         _results.push(listener(eventObject));
       }
       return _results;
+    };
+
+    Memo.prototype._listenersForEvent = function(storageEvent) {
+      return this._storageKeyEventListeners[storageEvent.key];
+    };
+
+    Memo.prototype._storageValueChanged = function(storageEvent) {
+      return storageEvent.oldValue !== storageEvent.newValue;
+    };
+
+    Memo.prototype._parseJSONSilently = function(jsonString) {
+      var error;
+      try {
+        return JSON.parse(jsonString);
+      } catch (_error) {
+        error = _error;
+        return jsonString;
+      }
     };
 
     return Memo;
