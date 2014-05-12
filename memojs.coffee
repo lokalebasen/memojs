@@ -36,6 +36,7 @@ class Memo
       @_storageKeyEventListeners[key] = [handler]
 
   _fireChange: (storageEvent) =>
+    return unless @_storageValueChanged(storageEvent)?
     listeners = @_storageKeyEventListeners[storageEvent.key] || []
     eventObject =
       key: storageEvent.key
@@ -44,6 +45,9 @@ class Memo
       url: storageEvent.url
     for listener in listeners
       listener(eventObject)
+
+  _storageValueChanged: (storageEvent) ->
+    storageEvent.oldValue isnt storageEvent.newValue
 
   _parseJSONSilently: (jsonString) ->
     try
